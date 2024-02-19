@@ -1,1 +1,0 @@
-Bachelorarbeit Infrastructure as Code
