@@ -1,7 +1,133 @@
-name: pulumi-stack
+name: 3tier-application
 runtime: nodejs
-description: A minimal AWS TypeScript Pulumi program
 config:
   pulumi:tags:
     value:
       pulumi:template: aws-typescript
+  az-1:
+    type: string
+    description: Availability Zone 1
+  az-2:
+    type: string
+    description: Availability Zone 2
+
+  vpc-cidr-block:
+    type: string
+    description: CIDR Block for the Virtual Private Cloud
+  vpc-name:
+    type: string
+    description: Name for the Virtual Private Cloud
+
+  web-subnet1-cidr:
+     type: string
+     description: CIDR Block for Web-tier Subnet-1
+  web-subnet1-name:
+     type: string
+     description: Name for Web-tier Subnet-1
+  web-subnet2-cidr:
+     type: string
+     description: CIDR Block for Web-tier Subnet-2
+  web-subnet2-name:
+     type: string
+     description: Name for Web-tier Subnet-2
+  app-subnet1-cidr:
+    type: string
+    description: CIDR Block for Application-tier Subnet-1
+  app-subnet1-name:
+    type: string
+    description: Name for Application-tier Subnet-1
+  app-subnet2-cidr:
+    type: string
+    description: CIDR Block for Application-tier Subnet-2
+  app-subnet2-name:
+    type: string
+    description: Name for Application-tier Subnet-2
+  db-subnet1-cidr:
+    type: string
+    description: CIDR Block for Database-tier Subnet-1
+  db-subnet1-name:
+    type: string
+    description: Name for Database-tier Subnet-1
+  db-subnet2-cidr:
+    type: string
+    description: CIDR Block for Database-tier Subnet-2
+  db-subnet2-name:
+    type: string
+    description: Name for Database-tier Subnet-2
+
+  igw-name:
+    type: string
+    description: Name for the Internet Gateway
+  public-rt-name:
+    type: string
+    description: Name for Public Route Table
+  private-rt-name:
+    type: string
+    description: Name for Private Route Table
+
+  launch-template-web-name:
+    type: string
+    description: Name for Launch Template Web
+  image-id:
+    type: string
+    description: AMI ID for EC2 Instances
+  instance-type:
+    type: string
+    description: Instance type for EC2 Instances
+  web-instance-name:
+    type: string
+    description: Name for Web Instances
+  launch-template-app-name:
+    type: string
+    description: Name for Launch Template App
+  app-instance-name:
+    type: string
+    description: Name for App Instances
+
+  alb-web-name:
+    type: string
+    description: Name for the Load Balancer in the Web Tier
+  alb-sg-web-name:
+    type: string
+    description: Name for Security Group of the Web Tier Load Balancer
+  tg-web-name:
+    type: string
+    description: Name for Target Group in the Web Tier
+  alb-app-name:
+    type: string
+    description: Name for the Load Balancer in the App Tier
+  alb-sg-app-name:
+    type: string
+    description: Name for Security Group of the App Tier Load Balancer
+  tg-app-name:
+    type: string
+    description: Name for Target Group in the App Tier
+
+  asg-web-name:
+    type: string
+    description: Name for the Auto Scaling Group in the Web Tier
+  asg-sg-web-name:
+    type: string
+    description: Name for Security Group of the Web Tier Auto Scaling Group
+  asg-app-name:
+    type: string
+    description: Name for the Auto Scaling Group in the App Tier
+  asg-sg-app-name:
+    type: string
+    description: Name for Security Group of the App Tier Auto Scaling Group
+
+  db-name:
+    type: string
+    description: Name for the Database
+  instance-class:
+    type: string
+    description: Instance class for the Database Instance
+  db-sg-name:
+    type: string
+    description: Name for Security Group of the Database
+  db-subnet-grp-name:
+    type: string
+    description: Name for Database Subnet Group
+  app-db-sg-name:
+    type: string
+    description: Name for Security Group of the App-DB Connection
