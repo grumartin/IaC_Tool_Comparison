@@ -1,5 +1,6 @@
 name: 3tier-application
 runtime: nodejs
+description: A three tier Application with Load Balancing and Autoscaling
 config:
   pulumi:tags:
     value:
