@@ -18,6 +18,12 @@ resource "aws_security_group" "alb-web-tier-sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port       = 3000
+    to_port         = 3000
+    protocol        = "tcp"
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -32,14 +38,9 @@ resource "aws_security_group" "alb-web-tier-sg" {
 
 resource "aws_lb_target_group" "alb-web-tier-tg" {
   name     = var.tg-web-tier-name
-  port     = 80
+  port     = 3000
   protocol = "HTTP"
   vpc_id   = aws_vpc.vpc.id
-
-  health_check {
-    path    = "/"
-    matcher = 200
-  }
 }
 
 resource "aws_lb_listener" "alb-web-tier-listener" {
@@ -73,6 +74,20 @@ resource "aws_security_group" "alb-app-tier-sg" {
     security_groups = [aws_security_group.asg-web-tier-sg.id]
   }
 
+  ingress {
+    from_port        = 3000
+    to_port          = 3000
+    protocol         = "tcp"
+    security_groups = [aws_security_group.asg-web-tier-sg.id]
+  }
+
+  ingress {
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    security_groups = [aws_security_group.asg-web-tier-sg.id]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -87,14 +102,9 @@ resource "aws_security_group" "alb-app-tier-sg" {
 
 resource "aws_lb_target_group" "alb-app-tier-tg" {
   name     = var.tg-app-tier-name
-  port     = 80
+  port     = 3000
   protocol = "HTTP"
   vpc_id   = aws_vpc.vpc.id
-
-  health_check {
-    path    = "/"
-    matcher = 200
-  }
 }
 
 resource "aws_lb_listener" "alb-app-tier-listener" {
@@ -107,4 +117,3 @@ resource "aws_lb_listener" "alb-app-tier-listener" {
     target_group_arn = aws_lb_target_group.alb-app-tier-tg.arn
   }
 }
-

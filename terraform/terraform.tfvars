@@ -6,6 +6,7 @@ az-2   = "eu-central-1b"
 # vpc
 vpc-cidr-block = "10.0.0.0/16"
 vpc-name       = "stack-3tier-vpc"
+ngw-name = "stack-3tier-nat-gw"
 
 # subnet
 web-tier-subnet-one-cidr = "10.0.1.0/24"
@@ -22,9 +23,9 @@ db-tier-subnet-two-cidr  = "10.0.6.0/24"
 db-tier-subnet-two-name  = "stack-3tier-db-sn-2"
 
 # routing
-igw-name          = "stack-3tier-igw"
-public-route-name = "stack-3tier-public-route-table"
-#private-route-name = "stack-3tier-private-route-table"
+igw-name           = "stack-3tier-igw"
+public-route-name  = "stack-3tier-public-route-table"
+private-route-name = "stack-3tier-private-route-table"
 
 # ec2
 launch-template-web-tier-name = "stack-3tier-launch-template-web"
@@ -53,3 +54,11 @@ db-name               = "postgres_instance"
 instance-class        = "db.t3.micro"
 db-tier-sg-name       = "stack-3tier-db-sg"
 db-tier-sn-group-name = "stack-3tier-db-sn-grp"
+
+# ecr
+ecr-frontend-repo-name  = "stack-3tier-ecr-repo-frontend"
+frontend-image-path     = "../apps/express-frontend"
+frontend-user-data-path = "../apps/express-frontend/user-data-frontend.sh"
+ecr-backend-repo-name   = "stack-3tier-ecr-repo-backend"
+backend-image-path      = "../apps/backend"
+backend-user-data-path  = "../apps/backend/user-data-backend.sh"

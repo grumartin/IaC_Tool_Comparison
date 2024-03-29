@@ -42,6 +42,8 @@ IaC_Tool_Comparison.iml
 # *.iml
 # *.ipr
 
+node_modules
+
 # CMake
 cmake-build-*/
 

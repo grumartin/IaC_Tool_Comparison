@@ -20,6 +20,10 @@ variable "vpc-name" {
   description = "Name for the Virtual Private Cloud"
 }
 
+variable "ngw-name" {
+  description = "Name for the Nat Gateway"
+}
+
 # igw
 variable "igw-name" {
   description = "Name for the Internet Gateway"
@@ -79,11 +83,9 @@ variable "public-route-name" {
   description = "Name for Public Route Table"
 }
 
-/*
 variable "private-route-name" {
   description = "Name for Private Route Table"
 }
-*/
 
 # ec2
 variable "launch-template-web-tier-name" {
@@ -175,4 +177,36 @@ variable "db-tier-sg-name" {
 
 variable "db-tier-sn-group-name" {
   description = "Name for Database Subnet Group"
+}
+
+# ecr
+
+variable "ecr-frontend-repo-name" {
+  type        = string
+  description = "The name of the Amazon ECR repository for the frontend application."
+}
+
+variable "frontend-image-path" {
+  type        = string
+  description = "The path to the frontend Docker image."
+}
+
+variable "frontend-user-data-path" {
+  type        = string
+  description = "The path to the user data script for configuring the frontend application."
+}
+
+variable "ecr-backend-repo-name" {
+  type        = string
+  description = "The name of the Amazon ECR repository for the backend application."
+}
+
+variable "backend-image-path" {
+  type        = string
+  description = "The path to the backend Docker image."
+}
+
+variable "backend-user-data-path" {
+  type        = string
+  description = "The path to the user data script for configuring the backend application."
 }

@@ -21,7 +21,6 @@ resource "aws_route_table_association" "public-route-association-two" {
   route_table_id = aws_route_table.public-route-table.id
 }
 
-/*
 resource "aws_route_table" "private-route-table" {
   vpc_id = aws_vpc.vpc.id
 
@@ -31,7 +30,7 @@ resource "aws_route_table" "private-route-table" {
   }
 
   tags = {
-    Name = var.private-rt-name
+    Name = var.private-route-name
   }
 }
 
@@ -44,4 +43,4 @@ resource "aws_route_table_association" "private-route-association-two" {
   subnet_id      = aws_subnet.app-tier-subnet-two.id
   route_table_id = aws_route_table.private-route-table.id
 }
-*/
+

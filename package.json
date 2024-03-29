@@ -1,5 +1,7 @@
 {
   "devDependencies": {
     "prettier": "^3.2.5"
-  }
+  },
+  "dependencies": {
+    "@pulumi/awsx": "^2.6.0"}
 }

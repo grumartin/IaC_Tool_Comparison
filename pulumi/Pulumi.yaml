@@ -18,6 +18,9 @@ config:
   vpc-name:
     type: string
     description: Name for the Virtual Private Cloud
+  ngw-name:
+    type: string
+    description: Name for Nat Gateway
 
   web-subnet1-cidr:
      type: string

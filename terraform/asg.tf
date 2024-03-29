@@ -22,6 +22,15 @@ resource "aws_security_group" "asg-web-tier-sg" {
     from_port       = 80
     to_port         = 80
     protocol        = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.alb-web-tier-sg.id]
+  }
+
+  ingress {
+    from_port       = 3000
+    to_port         = 3000
+    protocol        = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
     security_groups = [aws_security_group.alb-web-tier-sg.id]
   }
 
@@ -72,10 +81,16 @@ resource "aws_security_group" "asg-app-tier-sg" {
   }
 
   ingress {
+    from_port       = 3000
+    to_port         = 3000
+    protocol        = "TCP"
+    security_groups = [aws_security_group.alb-app-tier-sg.id]
+  }
+
+  ingress {
     from_port       = 22
     to_port         = 22
     protocol        = "TCP"
-    security_groups = [aws_security_group.asg-web-tier-sg.id]
   }
 
   egress {
