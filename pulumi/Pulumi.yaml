@@ -1,4 +1,4 @@
-name: 3tier-application
+name: three-tier-app
 runtime: nodejs
 description: A three tier Application with Load Balancing and Autoscaling
 config:
