@@ -104,10 +104,6 @@ variable "app-instance-name" {
   description = "Name for App Instances"
 }
 
-variable "image-id" {
-  description = "AMI ID for EC2 Instances"
-}
-
 variable "instance-type" {
   description = "Instance type for EC2 Instances"
 }

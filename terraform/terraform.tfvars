@@ -32,7 +32,6 @@ launch-template-web-tier-name = "stack-3tier-launch-template-web"
 web-instance-name             = "stack-3tier-web-instances"
 launch-template-app-tier-name = "stack-3tier-launch-template-app"
 app-instance-name             = "stack-3tier-app-instances"
-image-id                      = "ami-03484a09b43a06725"
 instance-type                 = "t2.micro"
 
 # alb

@@ -755,6 +755,7 @@ const asg_app = new aws.autoscaling.Group("asg-app", {
   maxSize: 4,
   minSize: 1,
   healthCheckType: "EC2",
+  healthCheckGracePeriod: 60,
   targetGroupArns: [target_group_app.arn],
   vpcZoneIdentifiers: [app_subnet1.id, app_subnet2.id],
   launchTemplate: {
@@ -769,6 +770,7 @@ const asg_web = new aws.autoscaling.Group("asg-web", {
   maxSize: 4,
   minSize: 1,
   healthCheckType: "EC2",
+  healthCheckGracePeriod: 60,
   targetGroupArns: [target_group_web.arn],
   vpcZoneIdentifiers: [web_subnet1.id, web_subnet2.id],
   launchTemplate: {

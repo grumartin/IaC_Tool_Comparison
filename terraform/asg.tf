@@ -4,6 +4,7 @@ resource "aws_autoscaling_group" "asg-web-tier" {
   max_size            = 4
   desired_capacity    = 2
   health_check_type   = "EC2"
+  health_check_grace_period = 60
   target_group_arns   = [aws_lb_target_group.alb-web-tier-tg.arn]
   vpc_zone_identifier = [aws_subnet.web-tier-subnet-one.id, aws_subnet.web-tier-subnet-two.id]
 
@@ -59,6 +60,7 @@ resource "aws_autoscaling_group" "asg-app-tier" {
   max_size            = 4
   desired_capacity    = 2
   health_check_type   = "EC2"
+  health_check_grace_period = 60
   target_group_arns   = [aws_lb_target_group.alb-app-tier-tg.arn]
   vpc_zone_identifier = [aws_subnet.app-tier-subnet-one.id, aws_subnet.app-tier-subnet-two.id]
 
