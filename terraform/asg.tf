@@ -1,12 +1,12 @@
 resource "aws_autoscaling_group" "asg-web-tier" {
-  name                = var.asg-web-tier-name
-  min_size            = 1
-  max_size            = 4
-  desired_capacity    = 2
-  health_check_type   = "EC2"
+  name                      = var.asg-web-tier-name
+  min_size                  = 1
+  max_size                  = 4
+  desired_capacity          = 2
+  health_check_type         = "EC2"
   health_check_grace_period = 60
-  target_group_arns   = [aws_lb_target_group.alb-web-tier-tg.arn]
-  vpc_zone_identifier = [aws_subnet.web-tier-subnet-one.id, aws_subnet.web-tier-subnet-two.id]
+  target_group_arns         = [aws_lb_target_group.alb-web-tier-tg.arn]
+  vpc_zone_identifier       = [aws_subnet.web-tier-subnet-one.id, aws_subnet.web-tier-subnet-two.id]
 
   launch_template {
     id      = aws_launch_template.template-web-tier.id
@@ -23,7 +23,7 @@ resource "aws_security_group" "asg-web-tier-sg" {
     from_port       = 80
     to_port         = 80
     protocol        = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks     = ["0.0.0.0/0"]
     security_groups = [aws_security_group.alb-web-tier-sg.id]
   }
 
@@ -31,7 +31,7 @@ resource "aws_security_group" "asg-web-tier-sg" {
     from_port       = 3000
     to_port         = 3000
     protocol        = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks     = ["0.0.0.0/0"]
     security_groups = [aws_security_group.alb-web-tier-sg.id]
   }
 
@@ -55,14 +55,14 @@ resource "aws_security_group" "asg-web-tier-sg" {
 }
 
 resource "aws_autoscaling_group" "asg-app-tier" {
-  name                = var.asg-app-tier-name
-  min_size            = 1
-  max_size            = 4
-  desired_capacity    = 2
-  health_check_type   = "EC2"
+  name                      = var.asg-app-tier-name
+  min_size                  = 1
+  max_size                  = 4
+  desired_capacity          = 2
+  health_check_type         = "EC2"
   health_check_grace_period = 60
-  target_group_arns   = [aws_lb_target_group.alb-app-tier-tg.arn]
-  vpc_zone_identifier = [aws_subnet.app-tier-subnet-one.id, aws_subnet.app-tier-subnet-two.id]
+  target_group_arns         = [aws_lb_target_group.alb-app-tier-tg.arn]
+  vpc_zone_identifier       = [aws_subnet.app-tier-subnet-one.id, aws_subnet.app-tier-subnet-two.id]
 
   launch_template {
     id      = aws_launch_template.template-app-tier.id
@@ -90,9 +90,9 @@ resource "aws_security_group" "asg-app-tier-sg" {
   }
 
   ingress {
-    from_port       = 22
-    to_port         = 22
-    protocol        = "TCP"
+    from_port = 22
+    to_port   = 22
+    protocol  = "TCP"
   }
 
   egress {
@@ -105,4 +105,14 @@ resource "aws_security_group" "asg-app-tier-sg" {
   tags = {
     Name = var.asg-sg-app-tier-name
   }
+}
+
+resource "aws_autoscaling_attachment" "asg_web_tier" {
+  autoscaling_group_name = aws_autoscaling_group.asg-web-tier.id
+  lb_target_group_arn    = aws_lb_target_group.alb-web-tier-tg.arn
+}
+
+resource "aws_autoscaling_attachment" "asg_app_tier" {
+  autoscaling_group_name = aws_autoscaling_group.asg-app-tier.id
+  lb_target_group_arn    = aws_lb_target_group.alb-app-tier-tg.arn
 }

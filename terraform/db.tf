@@ -1,3 +1,17 @@
+resource "aws_db_parameter_group" "db-parameter-group" {
+  name   = "db-pg-postgres"
+  family = "postgres16"
+
+  parameter {
+    name  = "rds.force_ssl"
+    value = "0"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 resource "aws_db_instance" "db" {
   allocated_storage      = 20
   storage_type           = "gp2"
@@ -7,7 +21,8 @@ resource "aws_db_instance" "db" {
   instance_class         = var.instance-class
   username               = var.db-username
   password               = var.db-password
-  parameter_group_name   = "default.postgres16"
+  parameter_group_name   = aws_db_parameter_group.db-parameter-group.name
+  apply_immediately      = true
   skip_final_snapshot    = true
   db_subnet_group_name   = aws_db_subnet_group.db-tier-sn-group.name
   vpc_security_group_ids = [aws_security_group.db-tier-sg.id]

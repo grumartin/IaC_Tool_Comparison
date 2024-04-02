@@ -432,7 +432,7 @@ const db_sg = new aws.ec2.SecurityGroup("db-sg", {
 //########################################################################
 const alb_app = new aws.lb.LoadBalancer("alb-app", {
   name: alb_app_name,
-  internal: false,
+  internal: true,
   loadBalancerType: "application",
   securityGroups: [alb_security_group_app.id],
   subnets: [app_subnet1.id, app_subnet2.id],
@@ -495,6 +495,23 @@ const albListener_web = new aws.lb.Listener("alb_listener-web", {
 //########################################################################
 //                     RELATIONAL DATABASE SERVICE
 //########################################################################
+const db_parameter_group = new aws.rds.ParameterGroup(
+  "db-parameter-group",
+  {
+    name: "db-pg-postgres",
+    family: "postgres16",
+    parameters: [
+      {
+        name: "rds.force_ssl",
+        value: "0",
+      },
+    ],
+  },
+  {
+    deleteBeforeReplace: true,
+  },
+);
+
 const rds_db = new aws.rds.Instance("rds-db", {
   allocatedStorage: 20,
   storageType: "gp2",
@@ -504,7 +521,8 @@ const rds_db = new aws.rds.Instance("rds-db", {
   instanceClass: instance_class,
   username: db_username,
   password: db_password,
-  parameterGroupName: "default.postgres16",
+  parameterGroupName: db_parameter_group.name,
+  applyImmediately: true,
   skipFinalSnapshot: true,
   dbSubnetGroupName: subnet_grp.name,
   vpcSecurityGroupIds: [db_sg.id],

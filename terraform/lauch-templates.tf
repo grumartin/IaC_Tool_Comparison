@@ -66,14 +66,14 @@ resource "aws_launch_template" "template-web-tier" {
 
   network_interfaces {
     associate_public_ip_address = true
-    security_groups = [aws_security_group.asg-web-tier-sg.id]
+    security_groups             = [aws_security_group.asg-web-tier-sg.id]
   }
 
   iam_instance_profile {
     name = aws_iam_instance_profile.ec2_ecr_connection.name
   }
 
-  image_id      = data.aws_ami.amazon_linux_2.id
+  image_id = data.aws_ami.amazon_linux_2.id
 
   block_device_mappings {
     device_name = "/dev/xvda"
@@ -104,14 +104,14 @@ resource "aws_launch_template" "template-app-tier" {
 
   network_interfaces {
     associate_public_ip_address = false
-    security_groups = [aws_security_group.asg-app-tier-sg.id]
+    security_groups             = [aws_security_group.asg-app-tier-sg.id]
   }
 
   iam_instance_profile {
     name = aws_iam_instance_profile.ec2_ecr_connection.name
   }
 
-  image_id      = data.aws_ami.amazon_linux_2.id
+  image_id = data.aws_ami.amazon_linux_2.id
 
   block_device_mappings {
     device_name = "/dev/xvda"
@@ -126,7 +126,7 @@ resource "aws_launch_template" "template-app-tier" {
     db_username = aws_db_instance.db.username,
     db_password = aws_db_instance.db.password,
     db_port     = aws_db_instance.db.port,
-    db_name     = aws_db_instance.db.db_name,
+    db_name     = var.db-name,
     ecr_url     = local.aws_ecr_url,
     image_name  = "${aws_ecr_repository.backend.repository_url}:latest"
     region      = var.region

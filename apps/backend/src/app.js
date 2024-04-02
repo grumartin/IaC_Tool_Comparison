@@ -1,29 +1,33 @@
 const express = require("express");
 const { Client } = require("pg");
 
-const PORT = process.env.DB_PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 const client = new Client({
   host: process.env.DB_HOSTNAME,
-  port: PORT,
+  port: process.env.DB_PORT,
   database: process.env.DB_NAME,
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
 });
 
 /*
+
 const client = new Client({
   host: "localhost",
   port: 5432,
   database: "test",
   user: "admin",
   password: "admin",
+  idleTimeoutMillis: 20000,
 });
 
+
  */
+
 client.connect();
 
-var cors = require("cors");
+const cors = require("cors");
 const app = express();
 
 // Create table and insert initial data on initialization
@@ -64,10 +68,10 @@ app.get("/", cors(), async (req, res) => {
 app.get("/rentals", cors(), async (req, res) => {
   try {
     const result = await client.query("SELECT * FROM rentals");
-    res.json(result.rows);
+    res.send(result.rows);
   } catch (err) {
     console.error("Error getting rentals:", err);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).send("Internal Server Error");
   }
 });
 

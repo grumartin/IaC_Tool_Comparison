@@ -6,5 +6,5 @@ resource "aws_nat_gateway" "nat-gw" {
   tags = {
     Name = var.ngw-name
   }
-  depends_on    = [aws_internet_gateway.igw]
+  depends_on = [aws_internet_gateway.igw]
 }

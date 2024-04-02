@@ -6,7 +6,7 @@ az-2   = "eu-central-1b"
 # vpc
 vpc-cidr-block = "10.0.0.0/16"
 vpc-name       = "stack-3tier-vpc"
-ngw-name = "stack-3tier-nat-gw"
+ngw-name       = "stack-3tier-nat-gw"
 
 # subnet
 web-tier-subnet-one-cidr = "10.0.1.0/24"

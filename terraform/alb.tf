@@ -19,9 +19,9 @@ resource "aws_security_group" "alb-web-tier-sg" {
   }
 
   ingress {
-    from_port       = 3000
-    to_port         = 3000
-    protocol        = "tcp"
+    from_port = 3000
+    to_port   = 3000
+    protocol  = "tcp"
   }
 
   egress {
@@ -45,7 +45,7 @@ resource "aws_lb_target_group" "alb-web-tier-tg" {
 
 resource "aws_lb_listener" "alb-web-tier-listener" {
   load_balancer_arn = aws_lb.alb-web-tier.arn
-  port              = "80"
+  port              = 80
   protocol          = "HTTP"
 
   default_action {
@@ -56,7 +56,7 @@ resource "aws_lb_listener" "alb-web-tier-listener" {
 
 resource "aws_lb" "alb-app-tier" {
   name               = var.alb-app-tier-name
-  internal           = false
+  internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb-app-tier-sg.id]
   subnets            = [aws_subnet.app-tier-subnet-one.id, aws_subnet.app-tier-subnet-two.id]
@@ -75,16 +75,16 @@ resource "aws_security_group" "alb-app-tier-sg" {
   }
 
   ingress {
-    from_port        = 3000
-    to_port          = 3000
-    protocol         = "tcp"
+    from_port       = 3000
+    to_port         = 3000
+    protocol        = "tcp"
     security_groups = [aws_security_group.asg-web-tier-sg.id]
   }
 
   ingress {
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
     security_groups = [aws_security_group.asg-web-tier-sg.id]
   }
 
@@ -109,7 +109,7 @@ resource "aws_lb_target_group" "alb-app-tier-tg" {
 
 resource "aws_lb_listener" "alb-app-tier-listener" {
   load_balancer_arn = aws_lb.alb-app-tier.arn
-  port              = "80"
+  port              = 80
   protocol          = "HTTP"
 
   default_action {
