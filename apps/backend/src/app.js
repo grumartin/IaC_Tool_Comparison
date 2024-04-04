@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const { Client } = require("pg");
 
 const PORT = process.env.PORT || 3000;
@@ -11,26 +12,9 @@ const client = new Client({
   password: process.env.DB_PASSWORD,
 });
 
-/*
-
-const client = new Client({
-  host: "localhost",
-  port: 5432,
-  database: "test",
-  user: "admin",
-  password: "admin",
-  idleTimeoutMillis: 20000,
-});
-
-
- */
-
 client.connect();
-
-const cors = require("cors");
 const app = express();
 
-// Create table and insert initial data on initialization
 async function initializeDatabase() {
   try {
     await client.query(`
@@ -39,7 +23,7 @@ async function initializeDatabase() {
         name VARCHAR(100) NOT NULL,
         info_primary TEXT,
         info_secondary TEXT,
-        prices FLOAT[]
+        price FLOAT
       )
     `);
 
@@ -47,11 +31,11 @@ async function initializeDatabase() {
 
     // Insert initial data
     await client.query(`
-      INSERT INTO rentals (name, info_primary, info_secondary, prices) 
+      INSERT INTO rentals (name, info_primary, info_secondary, price) 
       VALUES 
-        ('KAJAK', 'CHOOSE FROM DIFFERENT KAJAKS', 'SAFETY GEAR INCLUDED. ALONG WITH PADDLES.', '{12, 20, 30, 45}'),
-        ('SUP BOARD', 'DIFFERENT SIZES', 'SPECIAL: BEAST WITH 10 METERS OF LENGTH(UP TO 10 PERSONS)', '{14, 20, 30, 45}'),
-        ('BIKES', 'BIKES FOR OLD AND YOUNG', 'CHOICE BETWEEN INTERMEDIATE AND PREMIUM BIKES', '{16, 20, 30, 45}')
+        ('KAJAK', 'CHOOSE FROM DIFFERENT KAJAKS', 'SAFETY GEAR INCLUDED. ALONG WITH PADDLES.', '12'),
+        ('SUP BOARD', 'DIFFERENT SIZES', 'SPECIAL: BEAST WITH 10 METERS OF LENGTH(UP TO 10 PERSONS)', '20'),
+        ('BIKES', 'BIKES FOR OLD AND YOUNG', 'CHOICE BETWEEN INTERMEDIATE AND PREMIUM BIKES', '30')
     `);
     console.log("Database initialized");
   } catch (err) {
@@ -62,24 +46,23 @@ async function initializeDatabase() {
 initializeDatabase();
 
 app.get("/", cors(), async (req, res) => {
-  res.send({ message: "hello world" });
+  res.json({ message: "hello world" });
 });
 
 app.get("/rentals", cors(), async (req, res) => {
   try {
     const result = await client.query("SELECT * FROM rentals");
-    res.send(result.rows);
+    res.json(result.rows);
   } catch (err) {
     console.error("Error getting rentals:", err);
     res.status(500).send("Internal Server Error");
   }
 });
 
-// Custom 404 route not found handler
 app.use((req, res) => {
   res.status(404).send("404 NOT FOUND");
 });
 
 app.listen(PORT, () => {
-  console.log(`listening on port ${PORT}`);
+  console.log(`Listening on PORT ${PORT}`);
 });

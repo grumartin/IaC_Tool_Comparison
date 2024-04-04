@@ -4,7 +4,7 @@ const fetch = require("node-fetch");
 const PORT = process.env.PORT || 3000;
 
 let app = express();
-const APPLICATION_LOAD_BALANCER = process.env.APPLICATION_LOAD_BALANCER;
+const ALB_DNS = process.env.ALB_DNS;
 
 app.get("/", async (req, res) => {
   fetch("http://169.254.169.254/latest/meta-data/hostname").then(
@@ -16,17 +16,14 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/rentals", async (req, res) => {
-  fetch(`http://${APPLICATION_LOAD_BALANCER}/rentals`).then(
-    async (response) => {
-      const data = await response.json();
-      res.send(data);
-    },
-  );
+  fetch(`http://${ALB_DNS}/rentals`).then(async (response) => {
+    const data = await response.json();
+    res.json(data);
+  });
 });
 
-// Custom 404 route not found handler
 app.use((req, res) => {
-  res.status(404).send("404 not found");
+  res.status(404).send("404 NOT FOUND");
 });
 
 app.listen(PORT, () => {

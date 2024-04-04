@@ -688,10 +688,10 @@ const userDataFrontendFilled = pulumi
     frontendImage.imageName,
     repoFrontend.repositoryUrl,
   ])
-  .apply(([region, applicationLoadBalancerDnsName, imageName, ecrUrl]) => {
+  .apply(([region, albDns, imageName, ecrUrl]) => {
     // Replace variables in the user data script
     return userDataScriptFrontend
-      .replace("${application_load_balancer}", applicationLoadBalancerDnsName)
+      .replace("${alb_dns}", albDns)
       .replace("${ecr_url}", ecrUrl)
       .replace("${image_name}", imageName)
       .replace("${region}", region);

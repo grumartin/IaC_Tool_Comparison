@@ -31,8 +31,8 @@ config:
     secure: AAABALSHF4AXj+/QQP/ecyjt4b2P00YSYtgdNpzTdxhXkRfGSdz9
   three-tier-app:ecr-backend-repo-name: stack-3tier-ecr-repo-backend
   three-tier-app:ecr-frontend-repo-name: stack-3tier-ecr-repo-frontend
-  three-tier-app:frontend-image-path: ../apps/express-frontend
-  three-tier-app:frontend-user-data-path: ../apps/express-frontend/user-data-frontend.sh
+  three-tier-app:frontend-image-path: ../apps/frontend
+  three-tier-app:frontend-user-data-path: ../apps/frontend/user-data-frontend.sh
   three-tier-app:igw-name: stack-3tier-igw
   three-tier-app:image-id: ami-03484a09b43a06725
   three-tier-app:instance-class: db.t3.micro

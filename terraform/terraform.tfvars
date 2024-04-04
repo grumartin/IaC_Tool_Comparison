@@ -56,8 +56,8 @@ db-tier-sn-group-name = "stack-3tier-db-sn-grp"
 
 # ecr
 ecr-frontend-repo-name  = "stack-3tier-ecr-repo-frontend"
-frontend-image-path     = "../apps/express-frontend"
-frontend-user-data-path = "../apps/express-frontend/user-data-frontend.sh"
+frontend-image-path     = "../apps/frontend"
+frontend-user-data-path = "../apps/frontend/user-data-frontend.sh"
 ecr-backend-repo-name   = "stack-3tier-ecr-repo-backend"
 backend-image-path      = "../apps/backend"
 backend-user-data-path  = "../apps/backend/user-data-backend.sh"

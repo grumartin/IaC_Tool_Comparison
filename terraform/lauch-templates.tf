@@ -84,7 +84,7 @@ resource "aws_launch_template" "template-web-tier" {
   }
 
   user_data = base64encode(templatefile(var.frontend-user-data-path, {
-    application_load_balancer = aws_lb.alb-app-tier.dns_name,
+    alb_dns      = aws_lb.alb-app-tier.dns_name,
     ecr_url                   = local.aws_ecr_url,
     image_name                = "${aws_ecr_repository.frontend.repository_url}:latest"
     region                    = var.region
