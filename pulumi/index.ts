@@ -2,6 +2,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as docker from "@pulumi/docker";
 import * as fs from "fs";
+import * as awsx from "@pulumi/awsx";
 
 const config = new pulumi.Config();
 
@@ -577,36 +578,42 @@ const ec2EcrConnection = new aws.iam.InstanceProfile("ec2_ecr_connection", {
 //########################################################################
 //                       ELASTIC CONTAINER REGISTRY
 //########################################################################
-const repoBackend = new aws.ecr.Repository(ecr_backend_repo_name);
+const repoBackend = new awsx.ecr.Repository(ecr_backend_repo_name);
 
-const registryInfoBackend = repoBackend.registryId.apply(async (id) => {
-  const credentials = await aws.ecr.getCredentials({ registryId: id });
-  const decodedCredentials = Buffer.from(
-    credentials.authorizationToken,
-    "base64",
-  ).toString();
-  const [username, password] = decodedCredentials.split(":");
-  if (!password || !username) {
-    throw new Error("Invalid credentials");
-  }
-  return {
-    server: credentials.proxyEndpoint,
-    username: username,
-    password: password,
-  };
-});
+const registryInfoBackend = repoBackend.repository.registryId.apply(
+  async (id) => {
+    const credentials = await aws.ecr.getCredentials({ registryId: id });
+    const decodedCredentials = Buffer.from(
+      credentials.authorizationToken,
+      "base64",
+    ).toString();
+    const [username, password] = decodedCredentials.split(":");
+    if (!password || !username) {
+      throw new Error("Invalid credentials");
+    }
+    return {
+      server: credentials.proxyEndpoint,
+      username: username,
+      password: password,
+    };
+  },
+);
 
-const backendImage = new docker.Image("backend-image", {
-  imageName: pulumi.interpolate`${repoBackend.repositoryUrl}:latest`,
-  build: {
-    context: backend_image_path,
+const backendImage = new docker.Image(
+  "backend-image",
+  {
+    imageName: pulumi.interpolate`${repoBackend.url}:latest`,
+    build: {
+      context: backend_image_path,
+    },
+    registry: {
+      server: repoBackend.url,
+      username: registryInfoBackend.username,
+      password: registryInfoBackend.password,
+    },
   },
-  registry: {
-    server: repoBackend.repositoryUrl,
-    username: registryInfoBackend.username,
-    password: registryInfoBackend.password,
-  },
-});
+  { dependsOn: [repoBackend] },
+);
 
 const userDataScriptBackend = fs.readFileSync(backend_user_data_path, "utf-8");
 
@@ -619,7 +626,7 @@ const userDataBackendFilled = pulumi
     rds_db.port,
     rds_db.dbName,
     backendImage.imageName,
-    repoBackend.repositoryUrl,
+    repoBackend.url,
   ])
   .apply(
     ([
@@ -645,36 +652,42 @@ const userDataBackendFilled = pulumi
     },
   );
 
-const repoFrontend = new aws.ecr.Repository(ecr_frontend_repo_name);
+const repoFrontend = new awsx.ecr.Repository(ecr_frontend_repo_name);
 
-const registryInfoFrontend = repoFrontend.registryId.apply(async (id) => {
-  const credentials = await aws.ecr.getCredentials({ registryId: id });
-  const decodedCredentials = Buffer.from(
-    credentials.authorizationToken,
-    "base64",
-  ).toString();
-  const [username, password] = decodedCredentials.split(":");
-  if (!password || !username) {
-    throw new Error("Invalid credentials");
-  }
-  return {
-    server: credentials.proxyEndpoint,
-    username: username,
-    password: password,
-  };
-});
+const registryInfoFrontend = repoFrontend.repository.registryId.apply(
+  async (id) => {
+    const credentials = await aws.ecr.getCredentials({ registryId: id });
+    const decodedCredentials = Buffer.from(
+      credentials.authorizationToken,
+      "base64",
+    ).toString();
+    const [username, password] = decodedCredentials.split(":");
+    if (!password || !username) {
+      throw new Error("Invalid credentials");
+    }
+    return {
+      server: credentials.proxyEndpoint,
+      username: username,
+      password: password,
+    };
+  },
+);
 
-const frontendImage = new docker.Image("frontend-image", {
-  imageName: pulumi.interpolate`${repoFrontend.repositoryUrl}:latest`,
-  build: {
-    context: frontend_image_path,
+const frontendImage = new docker.Image(
+  "frontend-image",
+  {
+    imageName: pulumi.interpolate`${repoFrontend.url}:latest`,
+    build: {
+      context: frontend_image_path,
+    },
+    registry: {
+      server: repoFrontend.url,
+      username: registryInfoFrontend.username,
+      password: registryInfoFrontend.password,
+    },
   },
-  registry: {
-    server: repoFrontend.repositoryUrl,
-    username: registryInfoFrontend.username,
-    password: registryInfoFrontend.password,
-  },
-});
+  { dependsOn: [repoFrontend] },
+);
 
 const userDataScriptFrontend = fs.readFileSync(
   frontend_user_data_path,
@@ -682,12 +695,7 @@ const userDataScriptFrontend = fs.readFileSync(
 );
 
 const userDataFrontendFilled = pulumi
-  .all([
-    region,
-    alb_app.dnsName,
-    frontendImage.imageName,
-    repoFrontend.repositoryUrl,
-  ])
+  .all([region, alb_app.dnsName, frontendImage.imageName, repoFrontend.url])
   .apply(([region, albDns, imageName, ecrUrl]) => {
     // Replace variables in the user data script
     return userDataScriptFrontend
